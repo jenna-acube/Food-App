@@ -1,0 +1,58 @@
+.add{
+    width: 70%;
+    margin-left: max(5vw,25px);
+    margin-top: 50px;
+    font-size: 16px;
+    color: #73425b;
+}
+.add form{
+    gap: 20px;
+    color: #73425b;
+}
+.add-img-upload img{
+    width: 120px;
+}
+.add-product-name, .add-product-description{
+    width: max(40%,280px);
+}
+.add-product-name input, .add-product-description textarea{
+    padding: 10px;
+    border: 1px solid #73425b;
+    color: #73425b;
+}
+.add-category-price{
+    display: flex;
+    gap: 30px;
+    color: #73425b;
+}
+.add-category-price select, .add-category-price input{
+    max-width: 120px;
+    padding: 10px;
+    color: #73425b;
+    border: 1px solid #73425b;
+}
+.add-btn{
+    max-width: 120px;
+    border: none;
+    padding: 10px;
+    background-color: #73425b;
+    color: white;
+    cursor: pointer;
+}
+.add-product-name input,
+.add-product-description textarea,
+.add-category-price select,
+.add-category-price input {
+    padding: 10px;
+    border: 1px solid #73425b;
+    outline: none; /* Remove the default focus outline */
+}
+
+/* Add the :focus pseudo-class for focused state */
+.add-product-name input:focus,
+.add-product-description textarea:focus,
+.add-category-price select:focus,
+.add-category-price input:focus {
+    border-color: #73425b; /* Keep the border color as #73425b */
+    box-shadow: 0 0 5px rgba(115, 66, 91, 0.5); /* Optional: Add a subtle shadow */
+}

@@ -1,0 +1,99 @@
+.header {
+    height: 75vh; /* Good starting height for most screens */
+    width: 100%; /* Full width */
+    margin: 30px auto; 
+    background: url('../../assets/header.png') no-repeat center;
+    background-size: cover; /* Ensure the image covers the entire header area */
+    position: relative;
+}
+
+.header-contents {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5vw;
+    max-width: 50%;
+    bottom: 10%;
+    left: 6vw;
+    animation: fadeIn 3s;
+}
+
+.header-contents h2 {
+    font-weight: 500;
+    color: #ffffff;
+    font-size: max(3.5vw, 42px); /* Dynamically adjusts for responsiveness */
+}
+
+.header-contents p {
+    color: #ffffff;
+    font-size: 1.2vw; /* Slightly larger for readability */
+}
+
+.header-contents button {
+    border: none;
+    color: #6f6363;
+    font-weight: 500;
+    padding: 1vw 2.3vw;
+    background-color: white;
+    font-size: max(1vw, 14px); /* Adjusted for readability */
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+
+.header-contents button:hover {
+    background-color: #d8d7d7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1050px) {
+    .header {
+        height: 70vh;
+    }
+    .header-contents {
+        max-width: 45%;
+    }
+}
+
+@media (max-width: 990px) {
+    .header {
+        height: 70vh;
+    }
+    .header-contents {
+        max-width: 60%;
+    }
+    .header-contents p {
+        font-size: 1.4vw;
+    }
+}
+
+@media (max-width: 750px) {
+    .header {
+        height: 65vh;
+    }
+    .header-contents {
+        max-width: 70%;
+    }
+    .header-contents p {
+        display: none; /* Hide paragraph text on smaller screens */
+    }
+    .header-contents button {
+        padding: 2vw 4vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        height: 60vh;
+    }
+    .header-contents {
+        max-width: 80%;
+    }
+    .header-contents h2 {
+        font-size: 6vw; /* Larger heading for small screens */
+    }
+    .header-contents button {
+        padding: 2.5vw 5vw;
+    }
+}

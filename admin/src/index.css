@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Outfit;
+}
+
+body{
+  min-height: 100vh;
+  background-color: #fcfcfc;
+}
+
+a{
+  text-decoration: none;
+  color: inherit;
+}
+
+hr{
+  border: none;
+  height: 1px;
+  background-color: #a9a9a9;
+}
+.app-content{
+  display: flex;
+}
+.flex-col{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Custom Toast Container */
+.custom-toast-container {
+  font-size: 12px;   /* Reduce font size for smaller toasts */
+}
+
+/* Custom Toast Styling */
+.custom-toast {
+  padding: 8px;          /* Smaller padding for a compact look */
+  min-height: 40px;      /* Adjust height */
+  font-size: 14px;       /* Set custom font size */
+  line-height: 1.5;      /* Adjust line spacing */
+}
+
