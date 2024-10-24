@@ -32,11 +32,13 @@ const Cart = () => {
     }
   }, [setCartItems]);
 
-  // Save cart to localStorage whenever cartItems change
   useEffect(() => {
-    if (cartItems) {
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    }
+    // This will run whenever cartItems changes
+    console.log('Current cart items:', cartItems);
+    setCartItems(prevCartItems => {
+      const savedCart = JSON.parse(localStorage.getItem('cartItems'));
+      return savedCart || prevCartItems;
+    });
   }, [cartItems]);
 
   const handlePromoCodeSubmit = () => {
