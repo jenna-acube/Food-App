@@ -5,32 +5,19 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
-  const url = "https://food-app-backend-jrwn.onrender.com";
+  const url = "http://localhost:4000";
   const [token, setToken] = useState("");
   const [food_list, setFoodList] = useState([]);
 
 
-  const addToCart = async (itemId) => {
-    if (!cartItems[itemId]) {
-      setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
-    } else {
-      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    }
-
-    // Make API call if token is available
-    if (token) {
-      try {
-        await axios.post(
-          url + "/api/cart/add",
-          { itemId },
-          { headers: { token } }
-        );
-      } catch (error) {
-        console.error("Error adding item to cart:", error);
-      }
-    }
+  const addToCart = (itemId) => {
+    setCartItems((prevItems) => ({
+      ...prevItems,
+      [itemId]: (prevItems[itemId] || 0) + 1,
+    }));
   };
 
+  
   const removeFromCart = async (itemId) => {
     if (cartItems[itemId] > 0) {
       setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
