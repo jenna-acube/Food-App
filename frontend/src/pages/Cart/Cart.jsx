@@ -10,6 +10,8 @@ const Cart = () => {
   const [promoCode, setPromoCode] = useState(""); 
   const [discount, setDiscount] = useState(0); 
   const [promoMessage, setPromoMessage] = useState(""); 
+  const [appliedPromoCode, setAppliedPromoCode] = useState(""); 
+  
 
   const promoCodes = {
     WELCOME50: { type: 'percentage', value: 50, minSubtotal: 50 },
@@ -17,10 +19,10 @@ const Cart = () => {
     SAVE20: { type: 'fixed', value: 20, minSubtotal: 70 },
   };
 
+  const hasItemsInCart = food_list.some(item => cartItems[item._id] > 0);
   const subtotal = getTotalCartAmount();
   const deliveryFee = subtotal === 0 ? 0 : 2;
   const total = subtotal + deliveryFee - (subtotal * (discount / 100)) - (discount.type === 'fixed' ? discount.value : 0); 
-  const hasItemsInCart = food_list.some(item => cartItems[item._id] > 0);
 
   // Load cart from localStorage when component mounts
   useEffect(() => {
@@ -30,25 +32,43 @@ const Cart = () => {
     }
   }, [setCartItems]);
 
+  // Save cart to localStorage whenever cartItems change
+  useEffect(() => {
+    if (cartItems) {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
+
   const handlePromoCodeSubmit = () => {
     let appliedDiscount = 0;
-    const code = promoCodes[promoCode];
 
-    if (!code) {
-      setPromoMessage("Invalid promo code.");
-      return;
-    }
-
-    if (promoCode === "WELCOME50" && isFirstTimeCustomer && subtotal >= code.minSubtotal) {
-      appliedDiscount = code.value;
+    if (promoCode === "WELCOME50" && isFirstTimeCustomer && subtotal >= promoCodes.WELCOME50.minSubtotal) {
+      appliedDiscount = promoCodes.WELCOME50.value;
       setPromoMessage("Welcome code applied! You get 50% off your first order.");
-    } else if (subtotal < code.minSubtotal) {
-      const amountNeeded = code.minSubtotal - subtotal;
-      setPromoMessage(`Invalid promo code. You need to add $${amountNeeded.toFixed(2)} more to apply this code.`);
-      return;
+      setAppliedPromoCode(promoCode);
+    } else if (promoCode === "SAVE10" && subtotal >= promoCodes.SAVE10.minSubtotal) {
+      appliedDiscount = promoCodes.SAVE10.value;
+      setPromoMessage("10% discount applied!");
+      setAppliedPromoCode(promoCode);
+    } else if (promoCode === "SAVE20" && subtotal >= promoCodes.SAVE20.minSubtotal) {
+      appliedDiscount = promoCodes.SAVE20.value;
+      setPromoMessage("$20 discount applied!");
+      setAppliedPromoCode(promoCode);
     } else {
-      appliedDiscount = code.type === 'fixed' ? code.value : (subtotal * (code.value / 100));
-      setPromoMessage(`${code.type === 'fixed' ? `$${code.value}` : `${code.value}%`} discount applied!`);
+      const minSubtotal = promoCodes[promoCode]?.minSubtotal;
+      if (minSubtotal) {
+        const amountNeeded = minSubtotal - subtotal;
+        if (amountNeeded <= 0) {
+          setPromoMessage(`Promo code applied successfully!`);
+          setDiscount(promoCodes[promoCode].value);
+          setAppliedPromoCode(promoCode);
+        } else {
+          setPromoMessage(`Invalid promo code. You need to add $${amountNeeded.toFixed(2)} more to apply this code.`);
+        }
+      } else {
+        setPromoMessage("Invalid promo code.");
+      }
+      return;
     }
 
     setDiscount(appliedDiscount);
@@ -57,16 +77,16 @@ const Cart = () => {
   const handleItemRemove = (itemId) => {
     removeFromCart(itemId);
     const newSubtotal = getTotalCartAmount();
-    if (newSubtotal < promoCodes[promoCode]?.minSubtotal) {
+    if (newSubtotal < promoCodes[appliedPromoCode]?.minSubtotal) {
       setDiscount(0);
       setPromoMessage(""); 
-      setPromoCode(""); 
+      setAppliedPromoCode(""); 
     }
   };
 
   const handleNavigate = () => {
     if (hasItemsInCart) {
-      setPromoCode("");
+      setAppliedPromoCode("");
       setDiscount(0);
       setPromoMessage("");
     }
@@ -90,25 +110,29 @@ const Cart = () => {
               <p>Total</p>
               <p>Add</p>
               <p>Remove</p>
+              
             </div>
             <br />
             <hr />
-            {food_list.map((item) => (
-              cartItems[item._id] > 0 && (
-                <div key={item._id}>
-                  <div className="cart-items-title cart-items-item">
-                    <img src={url + "/images/" + item.image} alt={item.name} />
-                    <p>{item.name}</p>
-                    <p>${item.price.toFixed(2)}</p>
-                    <p>{cartItems[item._id]}</p>
-                    <p>${(item.price * cartItems[item._id]).toFixed(2)}</p>
-                    <p onClick={() => handleAddToCart(item._id)} className="cross">+</p>
-                    <p onClick={() => handleItemRemove(item._id)} className="cross">x</p>
+            {food_list.map((item) => {
+              if (cartItems[item._id] > 0) {
+                return (
+                  <div key={item._id}>
+                    <div className="cart-items-title cart-items-item">
+                      <img src={url + "/images/" + item.image} alt={item.name} />
+                      <p>{item.name}</p>
+                      <p>${item.price}</p>
+                      <p>{cartItems[item._id]}</p>
+                      <p>${item.price * cartItems[item._id]}</p>
+                      <p onClick={() => handleAddToCart(item._id)} className="cross">+</p>
+                      <p onClick={() => handleItemRemove(item._id)} className="cross">x</p>
+                    </div>
+                    <hr />
                   </div>
-                  <hr />
-                </div>
-              )
-            ))}
+                );
+              }
+              return null;
+            })}
           </>
         ) : (
           <div className="cart-empty">
@@ -136,7 +160,13 @@ const Cart = () => {
               <hr />
               <div className="cart-total-details">
                 <p>Discount</p>
-                <p>${discount > 0 ? (promoCodes[promoCode]?.type === 'percentage' ? (subtotal * (discount / 100)).toFixed(2) : discount) : `$0`}</p>
+                <p>
+                  {discount > 0 
+                    ? `$${promoCodes[appliedPromoCode]?.type === 'percentage' 
+                      ? (subtotal * (discount / 100)).toFixed(2) 
+                      : discount}` 
+                    : `$0`}
+                </p>
               </div>
               <hr />
               <div className="cart-total-details">
@@ -187,3 +217,4 @@ const Cart = () => {
 };
 
 export default Cart;
+``
