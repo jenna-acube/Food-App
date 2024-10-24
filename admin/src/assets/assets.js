@@ -7,6 +7,8 @@ import parcel_icon from './parcel_icon.png'
 import list_icon from './list_icon.png'
 import cross_icon from './cross_icon.png'
 
+export const url = 'https://food-app-backend-jrwn.onrender.com'
+
 export const assets ={
     logo,
     add_icon,
@@ -17,5 +19,3 @@ export const assets ={
     list_icon,
     cross_icon
 }
-
-export const url = 'https://food-app-backend-jrwn.onrender.com'
