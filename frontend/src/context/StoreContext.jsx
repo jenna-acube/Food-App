@@ -5,7 +5,7 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
-  const url = "https://food-app-backend-jrwn.onrender.com";;
+  const url = "http://localhost:4000";
   const [token, setToken] = useState("");
   const [food_list, setFoodList] = useState([]);
 
@@ -49,6 +49,11 @@ const StoreContextProvider = (props) => {
       }
     }
   };
+  
+  const clearCart = async () => {
+    console.log("clearcart function is called!");
+    setCartItems({});
+  }
 
   const getTotalCartAmount = () => {
     let totalAmount = 0;
@@ -83,6 +88,7 @@ const StoreContextProvider = (props) => {
       console.error("Error loading cart data:", error);
     }
   };
+
   
 
   useEffect(() => {
@@ -110,6 +116,7 @@ const StoreContextProvider = (props) => {
     getTotalCartAmount,
     url,
     token,
+    clearCart,
     setToken,
   };
 
