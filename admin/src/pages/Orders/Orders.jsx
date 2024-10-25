@@ -34,9 +34,19 @@ const Orders = ({ url }) => {
   }
 
   useEffect(() => {
-    fetchAllOrders();
-  }, []);
+  const fetchAndSortOrders = async () => {
+    try {
+      const fetchedOrders = await fetchAllOrders();
+      const sortedOrders = fetchedOrders.sort((a, b) => b.date - a.date); // Sort in descending order based on date or another key
+      setOrders(sortedOrders);
+    } catch (error) {
+      console.error("Error fetching and sorting orders:", error);
+    }
+  };
 
+  fetchAndSortOrders();
+}, []);
+  
   return (
     <div className="order add">
       <h3>Order Page</h3>
