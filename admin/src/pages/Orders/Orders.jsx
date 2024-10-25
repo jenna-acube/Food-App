@@ -33,19 +33,26 @@ const Orders = ({ url }) => {
     }
   }
 
-  useEffect(() => {
+useEffect(() => {
   const fetchAndSortOrders = async () => {
     try {
-      const fetchedOrders = await fetchAllOrders();
-      const sortedOrders = fetchedOrders.sort((a, b) => b.date - a.date); // Sort in descending order based on date or another key
-      setOrders(sortedOrders);
+      const response = await axios.get(url + "/api/order/list");
+      if (response.data.success) {
+        // Sort orders in descending order based on date or another key (assuming `date` field exists)
+        const sortedOrders = response.data.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setOrders(sortedOrders);
+      } else {
+        toast.error("Error");
+      }
     } catch (error) {
+      toast.error("Error fetching orders");
       console.error("Error fetching and sorting orders:", error);
     }
   };
 
   fetchAndSortOrders();
 }, []);
+
   
   return (
     <div className="order add">
