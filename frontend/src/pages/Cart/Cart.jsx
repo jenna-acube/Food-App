@@ -20,25 +20,13 @@ const Cart = () => {
   };
 
   const hasItemsInCart = food_list.some(item => cartItems[item._id] > 0);
+
+  
   const subtotal = getTotalCartAmount();
   const deliveryFee = subtotal === 0 ? 0 : 2;
   const total = subtotal + deliveryFee - (subtotal * (discount / 100)) - (discount.type === 'fixed' ? discount.value : 0); 
 
-  // Load cart from localStorage when component mounts
-  useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem('cartItems'));
-    if (savedCart) {
-      setCartItems(savedCart);
-    }
-  }, [setCartItems]);
-
-  // Save cart to localStorage whenever cartItems change
-  useEffect(() => {
-    if (cartItems) {
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    }
-  }, [cartItems]);
-
+ 
   const handlePromoCodeSubmit = () => {
     let appliedDiscount = 0;
 
@@ -114,7 +102,7 @@ const Cart = () => {
             </div>
             <br />
             <hr />
-            {food_list.map((item) => {
+            {food_list.map((item,index)=>{
               if (cartItems[item._id] > 0) {
                 return (
                   <div key={item._id}>
